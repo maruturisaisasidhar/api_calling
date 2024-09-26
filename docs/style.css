@@ -1,9 +1,40 @@
 h1 {
-  text-align: center;
+    text-align: center;
+    color: white;
+  }
+  body {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-image: url("./bgw2.jpeg");
+    background-size: 100%; 
+    background-repeat: no-repeat; 
 }
-div {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+div{
+    border: 5px solid white;
+    border-radius: 30px;
+    height: 409px;
+    width:500px;
+    background-color: black;
+    color: white;
+    font-size: 15pt;
+    position:fixed;
+    left: 500px;
+    top: 200px;
+}
+button{
+    height: 40px;
+    width: 100px;
+    border: 2px solid black;
+    border-radius: 20px;
+    color: black;
+    background-color: lightgrey;
+    font-size: 12pt;
+    font-weight: bold;
+}
+input{
+    height: 40px;
+    width: 200px;
+    border: 3px solid black;
+    border-radius: 20px;
 }
