@@ -1,75 +1,62 @@
-// Selecting the paragraph and button elements
-let div = document.querySelector("div");
-let btn = document.querySelector("button");
+let btn=document.querySelector("button");
+let div1=document.getElementById("1");
+let div2=document.getElementById("2");
+let div3=document.getElementById("3");
+let div4=document.getElementById("4");
+let div5=document.getElementById("5");
 
-btn.onclick = function () {
-  // Fetching the city name from input and encoding it
-  let cityname = encodeURIComponent(
-    document.querySelector("input").value.trim()
-  );
 
-  // OpenWeather API URL for 5-day forecast data using city name
-  let weather_url = `https://api.openweathermap.org/data/2.5/forecast?q=${cityname}&appid=c10881cc4d2b49b66f6a9965edc60240`;
+btn.addEventListener("click",()=>{
 
-  // Fetching weather data
-  fetch(weather_url)
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error(`Weather API Error: ${res.status} ${res.statusText}`);
+let cityname=document.getElementById("city").value;
+arr=[]
+url=`https://api.openweathermap.org/data/2.5/forecast?q=${cityname}&appid=c10881cc4d2b49b66f6a9965edc60240`;
+fetch(url)
+.then((res)=>{
+    let jsondata=res.json()
+    .then((data)=>{
+      for(let i=0;i<5;i++){
+        let DateTime=data.list[i].dt_txt;
+        let Description=data.list[i].weather[0].description;
+        let Wind=data.list[i].wind.speed;
+        let Temperature=Math.round((data.list[i].main.temp)-273.15);
+        let Humidity=data.list[i].main.humidity;
+        arr.push({DateTime,Description,Wind:`${Wind}m/s`,Temperature:`${Temperature}°C`,Humidity:`${Humidity}%`})
       }
-      return res.json();
+      div1.innerText = `
+                        DateTime: ${arr[0].DateTime}, 
+                        Temp: ${arr[0].Temperature},
+                        Description: ${arr[0].Description}, 
+                        Wind: ${arr[0].Wind},  
+                        Humidity: ${arr[0].Humidity}`;
+      div2.innerText = `
+                        DateTime: ${arr[1].DateTime},
+                        Temp: ${arr[1].Temperature},  
+                        Description: ${arr[1].Description}, 
+                        Wind: ${arr[1].Wind}, 
+                        Humidity: ${arr[1].Humidity}`;
+      div3.innerText = `
+                        DateTime: ${arr[2].DateTime}, 
+                        Temp: ${arr[2].Temperature}, 
+                        Description: ${arr[2].Description}, 
+                        Wind: ${arr[2].Wind}, 
+                        Humidity: ${arr[2].Humidity}`;
+      div4.innerText = `
+                      DateTime: ${arr[3].DateTime}, 
+                      Temp: ${arr[3].Temperature}, 
+                      Description: ${arr[3].Description}, 
+                      Wind: ${arr[3].Wind}, 
+                      Humidity: ${arr[3].Humidity}`;
+      div5.innerText = `
+                        DateTime: ${arr[4].DateTime}, 
+                        Temp: ${arr[4].Temperature}, 
+                        Description: ${arr[4].Description}, 
+                        Wind: ${arr[4].Wind}, 
+                        Humidity: ${arr[4].Humidity}`;
+    
     })
-    .then((weatherData) => {
-      // Today's date in YYYY-MM-DD format
-      let today = new Date().toISOString().split("T")[0];
-
-      // Getting hourly temperatures for today with descriptions
-      let todayTemps = weatherData.list
-        .filter((item) => item.dt_txt.startsWith(today))
-        .map((item) => {
-          let time = item.dt_txt.split(" ")[1]; // Extracting time
-          let tempCelsius = (item.main.temp - 273.15).toFixed(1); // Convert from Kelvin to Celsius
-          let description = item.weather[0].description; // Getting weather description
-          return `${time}: ${tempCelsius}°C, ${description}`; // Format: time: temp, description
-        });
-
-      // Display hourly temperatures for today
-      div.innerText = `Today's Hourly Temperatures:\n${todayTemps.join(
-        "\n"
-      )}\n`;
-
-      // Getting average temperatures and descriptions for the next 4 days
-      let dailyTemps = {};
-      let dailyDescriptions = {};
-
-      weatherData.list.forEach((item) => {
-        let date = item.dt_txt.split(" ")[0];
-        if (!dailyTemps[date]) {
-          dailyTemps[date] = [];
-          dailyDescriptions[date] = []; // Initialize descriptions array for the date
-        }
-        dailyTemps[date].push(item.main.temp - 273.15); // Convert from Kelvin to Celsius
-        dailyDescriptions[date].push(item.weather[0].description); // Store descriptions
-      });
-
-      // Calculate daily averages and get a representative description
-      let nextDays = Object.keys(dailyTemps).slice(1, 5);
-      let averageTempsWithDesc = nextDays.map((date) => {
-        let avgTemp =
-          dailyTemps[date].reduce((a, b) => a + b) / dailyTemps[date].length;
-        let uniqueDescriptions = [...new Set(dailyDescriptions[date])]; // Get unique descriptions
-        return `${date}: \n ${avgTemp.toFixed(1)}°C, ${uniqueDescriptions.join(
-          ", "
-        )}\n`; // Format: date: avgTemp, description
-      });
-
-      // Display average temperatures and descriptions for the next 4 days
-      div.innerText += `Next 4 Days Average Temperatures and Descriptions:\n${averageTempsWithDesc.join(
-        "\n"
-      )}`;
-    })
-    .catch((err) => {
-      para.innerText = "Error fetching data!";
-      console.error(err); // Log detailed error message
-    });
-};
+})
+.catch(()=>{
+    alert("unable to fetch data");
+})
+})
