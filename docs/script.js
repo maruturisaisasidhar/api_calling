@@ -1,62 +1,73 @@
-let btn=document.querySelector("button");
-let div1=document.getElementById("1");
-let div2=document.getElementById("2");
-let div3=document.getElementById("3");
-let div4=document.getElementById("4");
-let div5=document.getElementById("5");
+let btn = document.querySelector("button");
+let div6 = document.getElementById("1");
+let div7 = document.getElementById("2");
+let div8 = document.getElementById("3");
+let div9 = document.getElementById("4");
+let div10 = document.getElementById("5");
 
+let div1 = document.getElementById("6");
+let div2 = document.getElementById("7");
+let div3 = document.getElementById("8");
+let div4 = document.getElementById("9");
+let div5 = document.getElementById("10");
 
-btn.addEventListener("click",()=>{
+btn.addEventListener("click", () => {
+  let cityname = document.getElementById("city").value;
+  let arr = [];
+  let divs = [div1, div2, div3, div4, div5]; 
+  let divs1 = [div6, div7, div8, div9, div10];
+  let url = `https://api.openweathermap.org/data/2.5/forecast?q=${cityname}&appid=c10881cc4d2b49b66f6a9965edc60240`;
 
-let cityname=document.getElementById("city").value;
-arr=[]
-url=`https://api.openweathermap.org/data/2.5/forecast?q=${cityname}&appid=c10881cc4d2b49b66f6a9965edc60240`;
-fetch(url)
-.then((res)=>{
-    let jsondata=res.json()
-    .then((data)=>{
-      for(let i=0;i<5;i++){
-        let DateTime=data.list[i].dt_txt;
-        let Description=data.list[i].weather[0].description;
-        let Wind=data.list[i].wind.speed;
-        let Temperature=Math.round((data.list[i].main.temp)-273.15);
-        let Humidity=data.list[i].main.humidity;
-        arr.push({DateTime,Description,Wind:`${Wind}m/s`,Temperature:`${Temperature}°C`,Humidity:`${Humidity}%`})
+  fetch(url)
+    .then((res) => res.json())
+    .then((data) => {
+      for (let i = 0; i < 5; i++) {
+        let DateTime = data.list[i].dt_txt;
+        let Description = data.list[i].weather[0].description.toLowerCase();
+        let Wind = data.list[i].wind.speed;
+        let Temperature = Math.round(data.list[i].main.temp - 273.15);
+        let Humidity = data.list[i].main.humidity;
+        
+        arr.push({
+          DateTime,
+          Description,
+          Wind: `${Wind}m/s`,
+          Temperature: `${Temperature}°C`,
+          Humidity: `${Humidity}%`
+        });
+
+        divs1[i].innerText = `
+            DateTime: ${arr[i].DateTime}, 
+            Temp: ${arr[i].Temperature},
+            Description: ${arr[i].Description}, 
+            Wind: ${arr[i].Wind},  
+            Humidity: ${arr[i].Humidity}`;
+
+        if (arr[i].Description.includes("cloud")) {
+          divs[i].style.backgroundImage = "url('./broken clouds.gif')";
+        } else if (arr[i].Description.includes("rain")) {
+          divs[i].style.backgroundImage = "url('./rain1.gif')";
+        } else if (arr[i].Description.includes("sun")) {
+          divs[i].style.backgroundImage = "url('./sun.gif')";
+        } else if (arr[i].Description.includes("snow")) {
+          divs[i].style.backgroundImage = "url('./snow.gif')";
+        } else if (arr[i].Description.includes("clouds")) {
+          divs[i].style.backgroundImage = "url('./broken clouds.gif')";
+        } else if (arr[i].Description.includes("clear")) {
+          divs[i].style.backgroundImage = "url('./clearSky.gif')";
+        } else {
+          divs[i].style.backgroundColor = "lightcyan";
+        }
+
+        divs[i].style.backgroundSize = "cover";
+        divs[i].style.backgroundPosition = "center";
       }
-      div1.innerText = `
-                        DateTime: ${arr[0].DateTime}, 
-                        Temp: ${arr[0].Temperature},
-                        Description: ${arr[0].Description}, 
-                        Wind: ${arr[0].Wind},  
-                        Humidity: ${arr[0].Humidity}`;
-      div2.innerText = `
-                        DateTime: ${arr[1].DateTime},
-                        Temp: ${arr[1].Temperature},  
-                        Description: ${arr[1].Description}, 
-                        Wind: ${arr[1].Wind}, 
-                        Humidity: ${arr[1].Humidity}`;
-      div3.innerText = `
-                        DateTime: ${arr[2].DateTime}, 
-                        Temp: ${arr[2].Temperature}, 
-                        Description: ${arr[2].Description}, 
-                        Wind: ${arr[2].Wind}, 
-                        Humidity: ${arr[2].Humidity}`;
-      div4.innerText = `
-                      DateTime: ${arr[3].DateTime}, 
-                      Temp: ${arr[3].Temperature}, 
-                      Description: ${arr[3].Description}, 
-                      Wind: ${arr[3].Wind}, 
-                      Humidity: ${arr[3].Humidity}`;
-      div5.innerText = `
-                        DateTime: ${arr[4].DateTime}, 
-                        Temp: ${arr[4].Temperature}, 
-                        Description: ${arr[4].Description}, 
-                        Wind: ${arr[4].Wind}, 
-                        Humidity: ${arr[4].Humidity}`;
-    
+      for (let i = 0; i < 5; i++) {
+        divs1[i].style.visibility = "visible"; 
+      }
+
     })
-})
-.catch(()=>{
-    alert("unable to fetch data");
-})
-})
+    .catch(() => {
+      alert("Unable to fetch data");
+    });
+});
